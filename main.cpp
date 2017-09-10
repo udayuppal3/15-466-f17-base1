@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
 
 	{ //load texture 'tex':
 		std::vector< uint32_t > data;
-		if (!load_png("elements.png", &tex_size.x, &tex_size.y, &data, LowerLeftOrigin)) {
+		if (!load_png("textures.png", &tex_size.x, &tex_size.y, &data, LowerLeftOrigin)) {
 			std::cerr << "Failed to load texture." << std::endl;
 			exit(1);
 		}
