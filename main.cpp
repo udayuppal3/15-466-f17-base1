@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
 	//Configuration:
 	struct {
 		std::string title = "Game1: Text/Tiles";
-		glm::uvec2 size = glm::uvec2(640, 480);
+		glm::uvec2 size = glm::uvec2(480, 672);
 	} config;
 
 	//------------  initialization ------------
@@ -188,41 +188,121 @@ int main(int argc, char **argv) {
 	struct SpriteInfo {
 		glm::vec2 min_uv = glm::vec2(0.0f);
 		glm::vec2 max_uv = glm::vec2(1.0f);
-		glm::vec2 rad = glm::vec2(0.5f);
-	};
+		glm::vec2 rad = glm::vec2(1.0f);
+	} grid00, grid01, grid10, grid11, grid20, grid21, grid30, grid31, grid40, grid41, 
+    rock, player, treasure, text[4];
 
+  grid00.min_uv = glm::vec2(0.0f, 0.83333f);
+  grid00.max_uv = glm::vec2(0.2f, 1.0f);
+  grid00.rad = glm::vec2(0.2f, 0.14286f);
 
-	auto load_sprite = [](std::string const &name) -> SpriteInfo {
-		SpriteInfo info;
-		//TODO: look up sprite name in table of sprite infos
-		return info;
-	};
+  grid01.min_uv = glm::vec2(0.0f, 0.83333f);
+  grid01.max_uv = glm::vec2(0.2f, 1.0f);
+  grid01.rad = glm::vec2(0.14286f, 0.2f);
 
+  grid10.min_uv = glm::vec2(0.2f, 0.83333f);
+  grid10.max_uv = glm::vec2(0.4f, 1.0f);
+  grid10.rad = glm::vec2(0.2f, 0.14286f);
+
+  grid11.min_uv = glm::vec2(0.2f, 0.83333f);
+  grid11.max_uv = glm::vec2(0.4f, 1.0f);
+  grid11.rad = glm::vec2(0.14286f, 0.2f);
+
+  grid20.min_uv = glm::vec2(0.4f, 0.83333f);
+  grid20.max_uv = glm::vec2(0.6f, 1.0f);
+  grid20.rad = glm::vec2(0.2f, 0.14286f);
+
+  grid21.min_uv = glm::vec2(0.4f, 0.83333f);
+  grid21.max_uv = glm::vec2(0.6f, 1.0f);
+  grid21.rad = glm::vec2(0.14286f, 0.2f);
+
+  grid30.min_uv = glm::vec2(0.6f, 0.83333f);
+  grid30.max_uv = glm::vec2(0.8f, 1.0f);
+  grid30.rad = glm::vec2(0.2f, 0.14286f);
+
+  grid31.min_uv = glm::vec2(0.6f, 0.83333f);
+  grid31.max_uv = glm::vec2(0.8f, 1.0f);
+  grid31.rad = glm::vec2(0.14286f, 0.2f);
+
+  grid40.min_uv = glm::vec2(0.8f, 0.83333f);
+  grid40.max_uv = glm::vec2(1.0f, 1.0f);
+  grid40.rad = glm::vec2(0.2f, 0.14286f);
+
+  grid41.min_uv = glm::vec2(0.8f, 0.83333f);
+  grid41.max_uv = glm::vec2(1.0f, 1.0f);
+  grid41.rad = glm::vec2(0.14286f, 0.2f);
+
+  rock.min_uv = glm::vec2(0.0f, 0.66667f);
+  rock.max_uv = glm::vec2(0.2f, 0.83333f);
+  rock.rad = glm::vec2(0.2f, 0.14286f);
+
+  player.min_uv = glm::vec2(0.2f, 0.66667f);
+  player.max_uv = glm::vec2(0.4f, 0.83333f);
+  player.rad = glm::vec2(0.2f, 0.14286f);
+  
+  treasure.min_uv = glm::vec2(0.4f, 0.66667f);
+  treasure.max_uv = glm::vec2(0.6f, 0.83333f);
+  treasure.rad = glm::vec2(0.2f, 0.14286f);
+  
+  text[0].min_uv = glm::vec2(0.0f, 0.5f);
+  text[0].max_uv = glm::vec2(1.0f, 0.66667f);
+  text[0].rad = glm::vec2(1.0f, 0.14286f);
+
+  text[1].min_uv = glm::vec2(0.0f, 0.33333f);
+  text[1].max_uv = glm::vec2(1.0f, 0.5f);
+  text[1].rad = glm::vec2(1.0f, 0.14286f);
+
+  text[2].min_uv = glm::vec2(0.0f, 0.16667f);
+  text[2].max_uv = glm::vec2(1.0f, 0.33333f);
+  text[2].rad = glm::vec2(1.0f, 0.14286f);
+
+  text[3].min_uv = glm::vec2(0.0f, 0.0f);
+  text[3].max_uv = glm::vec2(1.0f, 0.16667f);
+  text[3].rad = glm::vec2(1.0f, 0.14286f);
 
 	//------------ game state ------------
 
-	glm::vec2 mouse = glm::vec2(0.0f, 0.0f); //mouse position in [-1,1]x[-1,1] coordinates
+  int current_text = 0;
+  glm::vec2 player_pos = glm::vec2(0.0f, 0.28571f);
+  float player_speed = 1.0f;
 
-	struct {
-		glm::vec2 at = glm::vec2(0.0f, 0.0f);
-		glm::vec2 radius = glm::vec2(10.0f, 10.0f);
-	} camera;
-	//correct radius for aspect ratio:
-	camera.radius.x = camera.radius.y * (float(config.size.x) / float(config.size.y));
+  bool gridpoints_visited[30] = {};
+  bool rocks_mined[5] = {};
+  (void) gridpoints_visited;
+  (void) rocks_mined;
 
 	//------------ game loop ------------
 
 	bool should_quit = false;
+  float pi = 3.14159265;
 	while (true) {
+		
+    auto current_time = std::chrono::high_resolution_clock::now();
+		static auto previous_time = current_time;
+		float elapsed = std::chrono::duration< float >(current_time - previous_time).count();
+		previous_time = current_time;
+
 		static SDL_Event evt;
 		while (SDL_PollEvent(&evt) == 1) {
 			//handle input:
-			if (evt.type == SDL_MOUSEMOTION) {
-				mouse.x = (evt.motion.x + 0.5f) / float(config.size.x) * 2.0f - 1.0f;
-				mouse.y = (evt.motion.y + 0.5f) / float(config.size.y) *-2.0f + 1.0f;
-			} else if (evt.type == SDL_MOUSEBUTTONDOWN) {
-			} else if (evt.type == SDL_KEYDOWN && evt.key.keysym.sym == SDLK_ESCAPE) {
-				should_quit = true;
+			if (evt.type == SDL_KEYDOWN) {
+        switch (evt.key.keysym.sym) {
+          case SDLK_ESCAPE:
+				    should_quit = true;
+            break;
+          case SDLK_UP:
+            player_pos.y += player_speed * elapsed;
+            break;
+          case SDLK_DOWN:
+            player_pos.y -= player_speed * elapsed;
+            break;
+          case SDLK_RIGHT:
+            player_pos.x += player_speed * elapsed;
+            break;
+          case SDLK_LEFT:
+            player_pos.x -= player_speed * elapsed;
+            break;
+        }
 			} else if (evt.type == SDL_QUIT) {
 				should_quit = true;
 				break;
@@ -230,34 +310,17 @@ int main(int argc, char **argv) {
 		}
 		if (should_quit) break;
 
-		auto current_time = std::chrono::high_resolution_clock::now();
-		static auto previous_time = current_time;
-		float elapsed = std::chrono::duration< float >(current_time - previous_time).count();
-		previous_time = current_time;
-
 		{ //update game state:
-			(void)elapsed;
 		}
 
 		//draw output:
-		glClearColor(0.5, 0.5, 0.5, 0.0);
+		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
 		{ //draw game state:
 			std::vector< Vertex > verts;
-
-			//helper: add rectangle to verts:
-			auto rect = [&verts](glm::vec2 const &at, glm::vec2 const &rad, glm::u8vec4 const &tint) {
-				verts.emplace_back(at + glm::vec2(-rad.x,-rad.y), glm::vec2(0.0f, 0.0f), tint);
-				verts.emplace_back(verts.back());
-				verts.emplace_back(at + glm::vec2(-rad.x, rad.y), glm::vec2(0.0f, 1.0f), tint);
-				verts.emplace_back(at + glm::vec2( rad.x,-rad.y), glm::vec2(1.0f, 0.0f), tint);
-				verts.emplace_back(at + glm::vec2( rad.x, rad.y), glm::vec2(1.0f, 1.0f), tint);
-				verts.emplace_back(verts.back());
-			};
 
 			auto draw_sprite = [&verts](SpriteInfo const &sprite, glm::vec2 const &at, float angle = 0.0f) {
 				glm::vec2 min_uv = sprite.min_uv;
@@ -275,28 +338,58 @@ int main(int argc, char **argv) {
 				verts.emplace_back(verts.back());
 			};
 
+			draw_sprite(grid00, glm::vec2(-0.8f, 0.85714f), pi/2.0f * 0.0f);
+			draw_sprite(grid31, glm::vec2(-0.4f, 0.85714f), pi/2.0f * 1.0f);
+			draw_sprite(grid31, glm::vec2(0.0f, 0.85714f), pi/2.0f * 1.0f);
+			draw_sprite(grid21, glm::vec2(0.4f, 0.85714f), pi/2.0f * 1.0f);
+			draw_sprite(grid01, glm::vec2(0.8f, 0.85714f), pi/2.0f * 3.0f);
 
-			//Draw a sprite "player" at position (5.0, 2.0):
-			static SpriteInfo player = load_sprite("player"); //TODO: hoist
-			draw_sprite(player, glm::vec2(5.0, 2.0), 0.2f);
+			draw_sprite(grid01, glm::vec2(-0.8f, 0.57143f), pi/2.0f * 3.0f);
+			draw_sprite(grid01, glm::vec2(-0.4f, 0.57143f), pi/2.0f * 1.0f);
+			draw_sprite(grid30, glm::vec2(0.0f, 0.57143f), pi/2.0f * 2.0f);
+			draw_sprite(grid30, glm::vec2(0.4f, 0.57143f), pi/2.0f * 0.0f);
+			draw_sprite(grid10, glm::vec2(0.8f, 0.57143f), pi/2.0f * 0.0f);
+			
+      draw_sprite(grid21, glm::vec2(-0.8f, 0.28571f), pi/2.0f * 3.0f);
+			draw_sprite(grid11, glm::vec2(-0.4f, 0.28571f), pi/2.0f * 1.0f);
+			draw_sprite(grid30, glm::vec2(0.0f, 0.28571f), pi/2.0f * 0.0f);
+			draw_sprite(grid21, glm::vec2(0.4f, 0.28571f), pi/2.0f * 3.0f);
+			draw_sprite(grid20, glm::vec2(0.8f, 0.28571f), pi/2.0f * 0.0f);
 
-			rect(glm::vec2(0.0f, 0.0f), glm::vec2(4.0f), glm::u8vec4(0xff, 0x00, 0x00, 0xff));
-			rect(mouse * camera.radius + camera.at, glm::vec2(4.0f), glm::u8vec4(0xff, 0xff, 0xff, 0x88));
+      draw_sprite(grid01, glm::vec2(-0.8f, 0.0f), pi/2.0f * 3.0f);
+      draw_sprite(grid20, glm::vec2(-0.4f, 0.0f), pi/2.0f * 2.0f);
+      draw_sprite(grid31, glm::vec2(0.0f, 0.0f), pi/2.0f * 3.0f);
+      draw_sprite(grid31, glm::vec2(0.4f, 0.0f), pi/2.0f * 1.0f);
+      draw_sprite(grid21, glm::vec2(0.8f, 0.0f), pi/2.0f * 1.0f);
+      
+      draw_sprite(grid10, glm::vec2(-0.8f, -0.28571f), pi/2.0f * 0.0f);
+      draw_sprite(grid10, glm::vec2(-0.4f, -0.28571f), pi/2.0f * 0.0f);
+      draw_sprite(grid01, glm::vec2(0.0f, -0.28571f), pi/2.0f * 3.0f);
+      draw_sprite(grid10, glm::vec2(0.4f, -0.28571f), pi/2.0f * 0.0f);
+      draw_sprite(grid01, glm::vec2(0.8f, -0.28571f), pi/2.0f * 1.0f); 
 
+      draw_sprite(grid21, glm::vec2(-0.8f, -0.57143f), pi/2.0f * 3.0f);
+      draw_sprite(grid31, glm::vec2(-0.4f, -0.57143f), pi/2.0f * 3.0f);
+      draw_sprite(grid31, glm::vec2(0.0f, -0.57143f), pi/2.0f * 3.0f);
+      draw_sprite(grid31, glm::vec2(0.4f, -0.57143f), pi/2.0f * 3.0f);
+      draw_sprite(grid00, glm::vec2(0.8f, -0.57143f), pi/2.0f * 2.0f); 
+     
+      draw_sprite(rock, glm::vec2(0.8f, 0.85714f)); 
+      draw_sprite(rock, glm::vec2(-0.8f, 0.57143f)); 
+      draw_sprite(rock, glm::vec2(-0.8f, 0.0f)); 
+      draw_sprite(rock, glm::vec2(0.0f, -0.28571f)); 
+      draw_sprite(rock, glm::vec2(0.8f, -0.57143f)); 
 
-			glBindBuffer(GL_ARRAY_BUFFER, buffer);
+      draw_sprite(player, player_pos);
+
+      draw_sprite(text[current_text], glm::vec2(0.0f, -0.85714f)); 
+      
+      glBindBuffer(GL_ARRAY_BUFFER, buffer);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * verts.size(), &verts[0], GL_STREAM_DRAW);
 
 			glUseProgram(program);
 			glUniform1i(program_tex, 0);
-			glm::vec2 scale = 1.0f / camera.radius;
-			glm::vec2 offset = scale * -camera.at;
-			glm::mat4 mvp = glm::mat4(
-				glm::vec4(scale.x, 0.0f, 0.0f, 0.0f),
-				glm::vec4(0.0f, scale.y, 0.0f, 0.0f),
-				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),
-				glm::vec4(offset.x, offset.y, 0.0f, 1.0f)
-			);
+			glm::mat4 mvp = glm::mat4(1.0f);
 			glUniformMatrix4fv(program_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
 
 			glBindTexture(GL_TEXTURE_2D, tex);
@@ -304,7 +397,6 @@ int main(int argc, char **argv) {
 
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, verts.size());
 		}
-
 
 		SDL_GL_SwapWindow(window);
 	}
