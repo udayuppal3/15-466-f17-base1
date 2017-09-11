@@ -260,11 +260,130 @@ int main(int argc, char **argv) {
   text[3].max_uv = glm::vec2(1.0f, 0.16667f);
   text[3].rad = glm::vec2(1.0f, 0.14286f);
 
+  //------------ pathing info ----------
+
+  struct CellPath {
+    float up = 10.0f;
+    float down = -10.0f;
+    float left = -10.0f;
+    float right = 10.0f;
+  } cell_paths[30];
+
+  cell_paths[0].up = 0.87f;
+  cell_paths[0].down = 0.84f;
+  cell_paths[0].left = -0.92f; 
+
+  cell_paths[1].up = 0.87f;
+
+  cell_paths[2].up = 0.87f;
+
+  cell_paths[3].up = 0.87f;
+  cell_paths[3].right = 
+
+  cell_paths[4].up = 0.87f;
+  cell_paths[4].left = 
+  cell_paths[4].right = 0.92f;
+
+  cell_paths[5].up = 
+  cell_paths[5].left = -0.92f;
+  cell_paths[5].right = 
+
+  cell_paths[6].down = 
+  cell_paths[6].left = 
+  cell_paths[6].right = 
+
+  cell_paths[7].left = 
+
+  cell_paths[8].right = 
+
+  cell_paths[9].left = 
+  cell_paths[9].right = 0.92f;
+
+  cell_paths[10].down = 
+  cell_paths[10].left = -0.92f;
+
+  cell_paths[11].up = 
+  cell_paths[11].down = 
+
+  cell_paths[12].right = 
+
+  cell_paths[13].down = 
+  cell_paths[13].left = 
+
+  cell_paths[14].down = 
+  cell_paths[14].right = 0.92f;
+
+  cell_paths[15].up = 
+  cell_paths[15].left = -0.92f;
+  cell_paths[15].right = 
+
+  cell_paths[16].up = 
+  cell_paths[16].left = 
+
+  cell_paths[17].down = 
+
+  cell_paths[18].up = 
+
+  cell_paths[19].up = 
+  cell_paths[19].right = 0.92f;
+
+  cell_paths[20].left = -0.92f;
+  cell_paths[20].right = 
+
+  cell_paths[21].left = 
+  cell_paths[21].right = 
+
+  cell_paths[22].up = 
+  cell_paths[22].left = 
+  cell_paths[22].right = 
+
+  cell_paths[23].left = 
+  cell_paths[23].right = 
+
+  cell_paths[24].down = 
+  cell_paths[24].left = 
+  cell_paths[24].right = 0.92f;
+
+  cell_paths[25].down = -0.60f;
+  cell_paths[25].left = -0.92f;
+
+  cell_paths[26].down = -0.60f;
+
+  cell_paths[27].down = -0.60f;
+
+  cell_paths[28].down = -0.60f;
+
+  cell_paths[29].up = 
+  cell_paths[29].down = -0.60f;
+  cell_paths[29].right = 0.92f;
+
 	//------------ game state ------------
 
   int current_text = 0;
   glm::vec2 player_pos = glm::vec2(0.0f, 0.28571f);
   float player_speed = 1.0f;
+
+  srand((unsigned)time(0));
+  int treasure_rock = rand() % 5;
+  glm::vec2 treasure_pos;
+  bool treasure_found = false;
+  switch (treasure_rock) {
+    case 0:
+      treasure_pos = glm::vec2(0.8f, 0.85714f);
+      break;
+    case 1:
+      treasure_pos = glm::vec2(-0.8f, 0.57143f);
+      break;
+    case 2:
+      treasure_pos = glm::vec2(-0.8f, 0.0f);
+      break;
+    case 3:
+      treasure_pos = glm::vec2(0.0f, -0.28571f);
+      break;
+    case 4:
+      treasure_pos = glm::vec2(0.8f, -0.57143f);
+      break;
+  }
 
   bool cells_visited[30] = {};
   bool rocks_mined[5] = {};
@@ -275,7 +394,7 @@ int main(int argc, char **argv) {
 	//------------ game loop ------------
 
 	bool should_quit = false;
-  float pi = 3.14159265;
+  float pi = 3.14159265f;
 	while (true) {
 		
     auto current_time = std::chrono::high_resolution_clock::now();
@@ -292,28 +411,53 @@ int main(int argc, char **argv) {
 				    should_quit = true;
             break;
           case SDLK_UP:
-            player_pos.y += player_speed * elapsed;
+            if (!treasure_found) {
+              player_pos.y += player_speed * elapsed;
+            }
             break;
           case SDLK_DOWN:
-            player_pos.y -= player_speed * elapsed;
+            if (!treasure_found) {
+              player_pos.y -= player_speed * elapsed;
+            }
             break;
           case SDLK_RIGHT:
-            player_pos.x += player_speed * elapsed;
+            if (!treasure_found) {
+              player_pos.x += player_speed * elapsed;
+            }
             break;
           case SDLK_LEFT:
-            player_pos.x -= player_speed * elapsed;
+            if (!treasure_found) {
+              player_pos.x -= player_speed * elapsed;
+            }
             break;
           case SDLK_SPACE:
-            if (current_cell == 4) {
-              rocks_mined[0] = true;
-            } else if (current_cell == 5) {
-              rocks_mined[1] = true;
-            } else if (current_cell == 15) {
-              rocks_mined[2] = true;
-            } else if (current_cell == 22) {
-              rocks_mined[3] = true;
-            } else if (current_cell == 29) {
-              rocks_mined[4] = true;
+            if (!treasure_found) {
+              if (current_cell == 4) {
+                rocks_mined[0] = true;
+                if (treasure_rock == 0) {
+                  treasure_found = true;
+                }
+              } else if (current_cell == 5) {
+                rocks_mined[1] = true;
+                if (treasure_rock == 1) {
+                  treasure_found = true;
+                }
+              } else if (current_cell == 15) {
+                rocks_mined[2] = true;
+                if (treasure_rock == 2) {
+                  treasure_found = true;
+                }
+              } else if (current_cell == 22) {
+                rocks_mined[3] = true;
+                if (treasure_rock == 3) {
+                  treasure_found = true;
+                }
+              } else if (current_cell == 29) {
+                rocks_mined[4] = true;
+                if (treasure_rock == 4) {
+                  treasure_found = true;
+                }
+              }
             }
             break;
         }
@@ -332,31 +476,51 @@ int main(int argc, char **argv) {
       cells_visited[current_cell] = true;
       if (current_cell == 4) {
         if (rocks_mined[0]) {
-          current_text = 2;
+          if (treasure_rock == 0) {
+            current_text = 3;
+          } else {
+            current_text = 2;
+          }
         } else {
           current_text = 1;
         }
       } else if (current_cell == 5) {
         if (rocks_mined[1]) {
-          current_text = 2;
+          if (treasure_rock == 1) {
+            current_text = 3;
+          } else {
+            current_text = 2;
+          }
         } else {
           current_text = 1;
         }       
       } else if (current_cell == 15) {
         if (rocks_mined[2]) {
-          current_text = 2;
+          if (treasure_rock == 2) {
+            current_text = 3;
+          } else {
+            current_text = 2;
+          }
         } else {
           current_text = 1;
         }      
       } else if (current_cell == 22) {
         if (rocks_mined[3]) {
-          current_text = 2;
+          if (treasure_rock == 3) {
+            current_text = 3;
+          } else {
+            current_text = 2;
+          }
         } else {
           current_text = 1;
         }       
       } else if (current_cell == 29) {
         if (rocks_mined[4]) {
-          current_text = 2;
+          if (treasure_rock == 4) {
+            current_text = 3;
+          } else {
+            current_text = 2;
+          }
         } else {
           current_text = 1;
         }
@@ -505,6 +669,10 @@ int main(int argc, char **argv) {
       draw_sprite(player, player_pos);
       draw_sprite(text[current_text], glm::vec2(0.0f, -0.85714f)); 
       
+      if (treasure_found) {
+        draw_sprite(treasure, treasure_pos);
+      }
+
       glBindBuffer(GL_ARRAY_BUFFER, buffer);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * verts.size(), &verts[0], GL_STREAM_DRAW);
 
@@ -533,8 +701,6 @@ int main(int argc, char **argv) {
 
 	return 0;
 }
-
-
 
 static GLuint compile_shader(GLenum type, std::string const &source) {
 	GLuint shader = glCreateShader(type);
