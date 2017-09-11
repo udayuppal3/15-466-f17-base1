@@ -266,10 +266,11 @@ int main(int argc, char **argv) {
   glm::vec2 player_pos = glm::vec2(0.0f, 0.28571f);
   float player_speed = 1.0f;
 
-  bool gridpoints_visited[30] = {};
+  bool cells_visited[30] = {};
   bool rocks_mined[5] = {};
-  (void) gridpoints_visited;
+  (void) cells_visited;
   (void) rocks_mined;
+  int current_cell = 12;
 
 	//------------ game loop ------------
 
@@ -302,6 +303,19 @@ int main(int argc, char **argv) {
           case SDLK_LEFT:
             player_pos.x -= player_speed * elapsed;
             break;
+          case SDLK_SPACE:
+            if (current_cell == 4) {
+              rocks_mined[0] = true;
+            } else if (current_cell == 5) {
+              rocks_mined[1] = true;
+            } else if (current_cell == 15) {
+              rocks_mined[2] = true;
+            } else if (current_cell == 22) {
+              rocks_mined[3] = true;
+            } else if (current_cell == 29) {
+              rocks_mined[4] = true;
+            }
+            break;
         }
 			} else if (evt.type == SDL_QUIT) {
 				should_quit = true;
@@ -311,6 +325,44 @@ int main(int argc, char **argv) {
 		if (should_quit) break;
 
 		{ //update game state:
+      int current_cell_y = (int)((1.85714 - (player_pos.y + 0.85714))*3.5f);
+      int current_cell_x = (int)((player_pos.x + 1.0f)*2.5f);
+      current_cell = current_cell_y * 5 + current_cell_x;
+      
+      cells_visited[current_cell] = true;
+      if (current_cell == 4) {
+        if (rocks_mined[0]) {
+          current_text = 2;
+        } else {
+          current_text = 1;
+        }
+      } else if (current_cell == 5) {
+        if (rocks_mined[1]) {
+          current_text = 2;
+        } else {
+          current_text = 1;
+        }       
+      } else if (current_cell == 15) {
+        if (rocks_mined[2]) {
+          current_text = 2;
+        } else {
+          current_text = 1;
+        }      
+      } else if (current_cell == 22) {
+        if (rocks_mined[3]) {
+          current_text = 2;
+        } else {
+          current_text = 1;
+        }       
+      } else if (current_cell == 29) {
+        if (rocks_mined[4]) {
+          current_text = 2;
+        } else {
+          current_text = 1;
+        }
+      } else {
+        current_text = 0;
+      }
 		}
 
 		//draw output:
@@ -338,50 +390,119 @@ int main(int argc, char **argv) {
 				verts.emplace_back(verts.back());
 			};
 
-			draw_sprite(grid00, glm::vec2(-0.8f, 0.85714f), pi/2.0f * 0.0f);
-			draw_sprite(grid31, glm::vec2(-0.4f, 0.85714f), pi/2.0f * 1.0f);
-			draw_sprite(grid31, glm::vec2(0.0f, 0.85714f), pi/2.0f * 1.0f);
-			draw_sprite(grid21, glm::vec2(0.4f, 0.85714f), pi/2.0f * 1.0f);
-			draw_sprite(grid01, glm::vec2(0.8f, 0.85714f), pi/2.0f * 3.0f);
+			if (cells_visited[0]) {
+        draw_sprite(grid00, glm::vec2(-0.8f, 0.85714f), pi/2.0f * 0.0f);
+      }
+			if (cells_visited[1]) {
+			  draw_sprite(grid31, glm::vec2(-0.4f, 0.85714f), pi/2.0f * 1.0f);
+      }
+			if (cells_visited[2]) {
+			  draw_sprite(grid31, glm::vec2(0.0f, 0.85714f), pi/2.0f * 1.0f);
+      }
+			if (cells_visited[3]) {
+			  draw_sprite(grid21, glm::vec2(0.4f, 0.85714f), pi/2.0f * 1.0f);
+      }
+			if (cells_visited[4]) {
+			  draw_sprite(grid01, glm::vec2(0.8f, 0.85714f), pi/2.0f * 3.0f);
+      }
 
-			draw_sprite(grid01, glm::vec2(-0.8f, 0.57143f), pi/2.0f * 3.0f);
-			draw_sprite(grid01, glm::vec2(-0.4f, 0.57143f), pi/2.0f * 1.0f);
-			draw_sprite(grid30, glm::vec2(0.0f, 0.57143f), pi/2.0f * 2.0f);
-			draw_sprite(grid30, glm::vec2(0.4f, 0.57143f), pi/2.0f * 0.0f);
-			draw_sprite(grid10, glm::vec2(0.8f, 0.57143f), pi/2.0f * 0.0f);
+			if (cells_visited[5]) {
+			  draw_sprite(grid01, glm::vec2(-0.8f, 0.57143f), pi/2.0f * 3.0f);
+      }
+			if (cells_visited[6]) {
+			  draw_sprite(grid01, glm::vec2(-0.4f, 0.57143f), pi/2.0f * 1.0f);
+      }
+			if (cells_visited[7]) {
+			  draw_sprite(grid30, glm::vec2(0.0f, 0.57143f), pi/2.0f * 2.0f);
+      }
+			if (cells_visited[8]) {
+			  draw_sprite(grid30, glm::vec2(0.4f, 0.57143f), pi/2.0f * 0.0f);
+      }
+			if (cells_visited[9]) {
+			  draw_sprite(grid10, glm::vec2(0.8f, 0.57143f), pi/2.0f * 0.0f);
+      }
 			
-      draw_sprite(grid21, glm::vec2(-0.8f, 0.28571f), pi/2.0f * 3.0f);
-			draw_sprite(grid11, glm::vec2(-0.4f, 0.28571f), pi/2.0f * 1.0f);
-			draw_sprite(grid30, glm::vec2(0.0f, 0.28571f), pi/2.0f * 0.0f);
-			draw_sprite(grid21, glm::vec2(0.4f, 0.28571f), pi/2.0f * 3.0f);
-			draw_sprite(grid20, glm::vec2(0.8f, 0.28571f), pi/2.0f * 0.0f);
+			if (cells_visited[10]) {
+        draw_sprite(grid21, glm::vec2(-0.8f, 0.28571f), pi/2.0f * 3.0f);
+      }
+			if (cells_visited[11]) {
+			  draw_sprite(grid11, glm::vec2(-0.4f, 0.28571f), pi/2.0f * 1.0f);
+      }
+			if (cells_visited[12]) {
+			  draw_sprite(grid30, glm::vec2(0.0f, 0.28571f), pi/2.0f * 0.0f);
+      }
+			if (cells_visited[13]) {
+			  draw_sprite(grid21, glm::vec2(0.4f, 0.28571f), pi/2.0f * 3.0f);
+      }
+			if (cells_visited[14]) {
+			  draw_sprite(grid20, glm::vec2(0.8f, 0.28571f), pi/2.0f * 0.0f);
+      }
 
-      draw_sprite(grid01, glm::vec2(-0.8f, 0.0f), pi/2.0f * 3.0f);
-      draw_sprite(grid20, glm::vec2(-0.4f, 0.0f), pi/2.0f * 2.0f);
-      draw_sprite(grid31, glm::vec2(0.0f, 0.0f), pi/2.0f * 3.0f);
-      draw_sprite(grid31, glm::vec2(0.4f, 0.0f), pi/2.0f * 1.0f);
-      draw_sprite(grid21, glm::vec2(0.8f, 0.0f), pi/2.0f * 1.0f);
+			if (cells_visited[15]) {
+        draw_sprite(grid01, glm::vec2(-0.8f, 0.0f), pi/2.0f * 3.0f);
+      }
+			if (cells_visited[16]) {
+        draw_sprite(grid20, glm::vec2(-0.4f, 0.0f), pi/2.0f * 2.0f);
+      }
+			if (cells_visited[17]) {
+        draw_sprite(grid31, glm::vec2(0.0f, 0.0f), pi/2.0f * 3.0f);
+      }
+			if (cells_visited[18]) {
+        draw_sprite(grid31, glm::vec2(0.4f, 0.0f), pi/2.0f * 1.0f);
+      }
+			if (cells_visited[19]) {
+        draw_sprite(grid21, glm::vec2(0.8f, 0.0f), pi/2.0f * 1.0f);
+      }
       
-      draw_sprite(grid10, glm::vec2(-0.8f, -0.28571f), pi/2.0f * 0.0f);
-      draw_sprite(grid10, glm::vec2(-0.4f, -0.28571f), pi/2.0f * 0.0f);
-      draw_sprite(grid01, glm::vec2(0.0f, -0.28571f), pi/2.0f * 3.0f);
-      draw_sprite(grid10, glm::vec2(0.4f, -0.28571f), pi/2.0f * 0.0f);
-      draw_sprite(grid01, glm::vec2(0.8f, -0.28571f), pi/2.0f * 1.0f); 
+			if (cells_visited[20]) {
+        draw_sprite(grid10, glm::vec2(-0.8f, -0.28571f), pi/2.0f * 0.0f);
+      }
+			if (cells_visited[21]) {
+        draw_sprite(grid10, glm::vec2(-0.4f, -0.28571f), pi/2.0f * 0.0f);
+      }
+			if (cells_visited[22]) {
+        draw_sprite(grid01, glm::vec2(0.0f, -0.28571f), pi/2.0f * 3.0f);
+      }
+			if (cells_visited[23]) {
+        draw_sprite(grid10, glm::vec2(0.4f, -0.28571f), pi/2.0f * 0.0f);
+      }
+			if (cells_visited[24]) {
+        draw_sprite(grid01, glm::vec2(0.8f, -0.28571f), pi/2.0f * 1.0f); 
+      }
 
-      draw_sprite(grid21, glm::vec2(-0.8f, -0.57143f), pi/2.0f * 3.0f);
-      draw_sprite(grid31, glm::vec2(-0.4f, -0.57143f), pi/2.0f * 3.0f);
-      draw_sprite(grid31, glm::vec2(0.0f, -0.57143f), pi/2.0f * 3.0f);
-      draw_sprite(grid31, glm::vec2(0.4f, -0.57143f), pi/2.0f * 3.0f);
-      draw_sprite(grid00, glm::vec2(0.8f, -0.57143f), pi/2.0f * 2.0f); 
+			if (cells_visited[25]) {
+        draw_sprite(grid21, glm::vec2(-0.8f, -0.57143f), pi/2.0f * 3.0f);
+      }
+			if (cells_visited[26]) {
+        draw_sprite(grid31, glm::vec2(-0.4f, -0.57143f), pi/2.0f * 3.0f);
+      }
+			if (cells_visited[27]) {
+        draw_sprite(grid31, glm::vec2(0.0f, -0.57143f), pi/2.0f * 3.0f);
+      }
+			if (cells_visited[28]) {
+        draw_sprite(grid31, glm::vec2(0.4f, -0.57143f), pi/2.0f * 3.0f);
+      }
+			if (cells_visited[29]) {
+        draw_sprite(grid00, glm::vec2(0.8f, -0.57143f), pi/2.0f * 2.0f); 
+      }
      
-      draw_sprite(rock, glm::vec2(0.8f, 0.85714f)); 
-      draw_sprite(rock, glm::vec2(-0.8f, 0.57143f)); 
-      draw_sprite(rock, glm::vec2(-0.8f, 0.0f)); 
-      draw_sprite(rock, glm::vec2(0.0f, -0.28571f)); 
-      draw_sprite(rock, glm::vec2(0.8f, -0.57143f)); 
+			if (cells_visited[4] && !rocks_mined[0]) {
+        draw_sprite(rock, glm::vec2(0.8f, 0.85714f)); 
+      }
+			if (cells_visited[5] && !rocks_mined[1]) {
+        draw_sprite(rock, glm::vec2(-0.8f, 0.57143f)); 
+      }
+			if (cells_visited[15] && !rocks_mined[2]) {
+        draw_sprite(rock, glm::vec2(-0.8f, 0.0f)); 
+      }
+			if (cells_visited[22] && !rocks_mined[3]) {
+        draw_sprite(rock, glm::vec2(0.0f, -0.28571f)); 
+      }
+			if (cells_visited[29] && !rocks_mined[4]) {
+        draw_sprite(rock, glm::vec2(0.8f, -0.57143f)); 
+      }
 
       draw_sprite(player, player_pos);
-
       draw_sprite(text[current_text], glm::vec2(0.0f, -0.85714f)); 
       
       glBindBuffer(GL_ARRAY_BUFFER, buffer);
