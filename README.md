@@ -1,29 +1,24 @@
 NOTE: please fill in the first section with information about your game.
 
-# *Game Title*
+# Cave Explorer
 
-*Game Title* is *Your Name*'s implementation of [*Design Document*](http://graphics.cs.cmu.edu/courses/15-466-f17/game1-designs/put-real-link-here) for game1 in 15-466-f17.
+Cave Explorer is Uday Uppal's implementation of [Cave Explorer](http://graphics.cs.cmu.edu/courses/15-466-f17/game1-designs/aluo/) for game1 in 15-466-f17.
 
-*Include a Screenshot Here*
-
-## Build Notes
-
-*Include any special notes or steps required to build your game here. If there are no special notes, delete this section.*
+![Image](screenshots/Game1ScreenShot4.png?raw=true "Image")
 
 ## Asset Pipeline
 
-*Briefly describe the asset pipeline for this game. What sorts of source files are used? How are they processed? How are they loaded?*
+The assets were built using Vectr, a simple vector graphics program. Assets included textures for background grid pieces, the player, rocks, treasure, and text phrases. All assets were generated inside one file. This file was then exported to a png format, and inserted into the game. The different assets were then loaded from the texture atlas based on their placement and size. Many assets were drawn rotated and resized to save space.
 
 ## Architecture
 
-*Provide a brief introduction to how you implemented the design. Talk about the basic structure of your code.*
+The code is divided into different sections. There is a section for sprite loading that handles the loading of the various assets from the texture atlas. There is also a section for information about the pathing on the map, since this is a static map and there are certain rules that must be followed by the player (so they cannot float through walls). Within the game loop, there is also a drawing section where first the background cells are drawn, then the rocks, players, treasure, and text. 
 
 ## Reflection
 
-*Reflect on the assignment. What was difficult? What worked well? If you were doing it again, what would you change?*
+The main difficulty in the assignment was generating the map and pathing rules, since this was a very specific map and had to be implemented by hand (a 6x5 grid). This could probably have been done in some clever way programatically, but I just wanted to get something working. The texture loading and rendering worked surprisingly well, since I made sure to generate a texture atlas that had nice, easy to query sizes and positions for all textures. If I were doing this again, I would find a better way to bake in the pathing and drawing rules for the grid of cells.
 
-*Reflect on the design document. What was clear and what was ambiguous? How did you resolve the ambiguities?*
-
+The design document was very clear on the map and gameplay mechanics, including how to move the player and how to explore the map. It was a little ambigous about what cells to display after exploration, and also the end state of the game. I decided that I would display only the cells that the player has explored so far, and that the game would end as soon as the treasure was found, making the player immobile.
 
 # About Base1
 
