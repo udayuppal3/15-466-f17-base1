@@ -271,81 +271,81 @@ int main(int argc, char **argv) {
 
   cell_paths[0].up = 0.87f;
   cell_paths[0].down = 0.84f;
-  cell_paths[0].left = -0.92f; 
+  cell_paths[0].left = -0.812f; 
 
   cell_paths[1].up = 0.87f;
 
   cell_paths[2].up = 0.87f;
 
   cell_paths[3].up = 0.87f;
-  cell_paths[3].right = 
+  cell_paths[3].right = 0.412f;
 
   cell_paths[4].up = 0.87f;
-  cell_paths[4].left = 
-  cell_paths[4].right = 0.92f;
+  cell_paths[4].left = 0.788f;
+  cell_paths[4].right = 0.812f;
 
-  cell_paths[5].up = 
-  cell_paths[5].left = -0.92f;
-  cell_paths[5].right = 
+  cell_paths[5].up = 0.583f;
+  cell_paths[5].left = -0.812f;
+  cell_paths[5].right = -0.788f;
 
-  cell_paths[6].down = 
-  cell_paths[6].left = 
-  cell_paths[6].right = 
+  cell_paths[6].down = 0.559f;
+  cell_paths[6].left = -0.412f;
+  cell_paths[6].right = -0.388f;
 
-  cell_paths[7].left = 
+  cell_paths[7].left = -0.012f;
 
-  cell_paths[8].right = 
+  cell_paths[8].right = 0.412f;
 
-  cell_paths[9].left = 
-  cell_paths[9].right = 0.92f;
+  cell_paths[9].left = 0.788f;
+  cell_paths[9].right = 0.812f;
 
-  cell_paths[10].down = 
-  cell_paths[10].left = -0.92f;
+  cell_paths[10].down = 0.274f;
+  cell_paths[10].left = -0.812f;
 
-  cell_paths[11].up = 
-  cell_paths[11].down = 
+  cell_paths[11].up = 0.298f;
+  cell_paths[11].down = 0.274f;
 
-  cell_paths[12].right = 
+  cell_paths[12].right = 0.012f;
 
-  cell_paths[13].down = 
-  cell_paths[13].left = 
+  cell_paths[13].down = 0.274f;
+  cell_paths[13].left = 0.388f;
 
-  cell_paths[14].down = 
-  cell_paths[14].right = 0.92f;
+  cell_paths[14].down = 0.274f;
+  cell_paths[14].right = 0.812f;
 
-  cell_paths[15].up = 
-  cell_paths[15].left = -0.92f;
-  cell_paths[15].right = 
+  cell_paths[15].up = 0.012f;
+  cell_paths[15].left = -0.812f;
+  cell_paths[15].right = -0.788f;
 
-  cell_paths[16].up = 
-  cell_paths[16].left = 
+  cell_paths[16].up = 0.012f;
+  cell_paths[16].left = -0.412f;
 
-  cell_paths[17].down = 
+  cell_paths[17].down = -0.012f;
 
-  cell_paths[18].up = 
+  cell_paths[18].up = 0.012f;
 
-  cell_paths[19].up = 
-  cell_paths[19].right = 0.92f;
+  cell_paths[19].up = 0.012f;
+  cell_paths[19].right = 0.812f;
 
-  cell_paths[20].left = -0.92f;
-  cell_paths[20].right = 
+  cell_paths[20].left = -0.812f;
+  cell_paths[20].right = -0.788f;
 
-  cell_paths[21].left = 
-  cell_paths[21].right = 
+  cell_paths[21].left = -0.412f;
+  cell_paths[21].right = -0.388f;
 
-  cell_paths[22].up = 
-  cell_paths[22].left = 
-  cell_paths[22].right = 
+  cell_paths[22].up = -0.274f;
+  cell_paths[22].left = -0.012f;
+  cell_paths[22].right = 0.012f;
 
-  cell_paths[23].left = 
-  cell_paths[23].right = 
+  cell_paths[23].left = 0.388f;
+  cell_paths[23].right = 0.412f;
 
-  cell_paths[24].down = 
-  cell_paths[24].left = 
-  cell_paths[24].right = 0.92f;
+  cell_paths[24].down = -0.298f;
+  cell_paths[24].left = 0.788f;
+  cell_paths[24].right = 0.812f;
 
   cell_paths[25].down = -0.60f;
-  cell_paths[25].left = -0.92f;
+  cell_paths[25].left = -0.812f;
 
   cell_paths[26].down = -0.60f;
 
@@ -353,9 +353,9 @@ int main(int argc, char **argv) {
 
   cell_paths[28].down = -0.60f;
 
-  cell_paths[29].up = 
+  cell_paths[29].up = -0.559f;
   cell_paths[29].down = -0.60f;
-  cell_paths[29].right = 0.92f;
+  cell_paths[29].right = 0.812f;
 
 	//------------ game state ------------
 
@@ -411,22 +411,22 @@ int main(int argc, char **argv) {
 				    should_quit = true;
             break;
           case SDLK_UP:
-            if (!treasure_found) {
+            if (!treasure_found && player_pos.y < cell_paths[current_cell].up) {
               player_pos.y += player_speed * elapsed;
             }
             break;
           case SDLK_DOWN:
-            if (!treasure_found) {
+            if (!treasure_found && player_pos.y > cell_paths[current_cell].down) {
               player_pos.y -= player_speed * elapsed;
             }
             break;
           case SDLK_RIGHT:
-            if (!treasure_found) {
+            if (!treasure_found && player_pos.x < cell_paths[current_cell].right) {
               player_pos.x += player_speed * elapsed;
             }
             break;
           case SDLK_LEFT:
-            if (!treasure_found) {
+            if (!treasure_found && player_pos.x > cell_paths[current_cell].left) {
               player_pos.x -= player_speed * elapsed;
             }
             break;
